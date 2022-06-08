@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html {
+  font-size: 62.5%;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+  line-height: 1rem;
+  letter-spacing: 0.08rem;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  font-size: 1.4rem;
+  font-weight: inherit;
+  background-color: #03705e;
+  height: 100vh;
+  width: 100vw;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 20rem;
+  width: 60rem;
+  background-color: transparent;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+.clock-column {
+  margin-right: 7rem;
+  text-align: center;
+  position: relative;
+  background-color: #fff;
+  min-height: 160px;
+  min-width: 160px;
+  border-radius: 5px;
+}
+.clock-column::after {
+  content: ":";
+  display: block;
+  height: 0.25rem;
+  width: 0.25rem;
+  font-size: 75px;
+  font-weight: 200;
+  color: #feffff;
+  position: absolute;
+  top: 60px;
+  right: -25px;
+}
+.clock-column:last-child::after {
+  display: none;
+}
+
+.clock-column:last-child {
+  margin-right: 0;
+}
+
+.clock-label {
+  padding-top: 20px;
+  text-transform: uppercase;
+  color: #131313;
+  font-size: 16px;
+  text-align: center;
+  border-top: 2px solid rgba(6, 121, 215, 0.989);
+}
+
+.clock-timer {
+  color: #131313;
+  font-size: 46px;
+  line-height: 1;
+}
+
+.clock-input {
+  clear: both;
+  text-align: center;
+  max-width: 250px;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  background-color: #fff;
+  margin: 0 auto 90px;
+}
+
+input#time-to {
+  padding: 5px;
+  border: 0;
+  border-radius: 3px;
+  font-size: 23px;
+  font-family: sans-serif;
+  text-align: center;
+  color: #066dcd;
+  background-color: #fff;
+}
+
+.done {
+  color: #fff;
+  font-weight: 600;
+}
+  </style>
+</head>
+<body>
+  <div class="clock-input">
+    <input type="date" name="time-to" class="time-to" id="time-to" value="" onchange="calcTime(this.value)">
+  </div>
+  <div class="container">
+    <div class="clock-column">
+      <p class="clock-day clock-timer"></p>
+      <p class="clock-label">Days</p>
+    </div>
+  
+    <div class="clock-column">
+      <p class="clock-hours clock-timer"></p>
+      <p class="clock-label">Hours</p>
+    </div>
+  
+    <div class="clock-column">
+      <p class="clock-minutes clock-timer"></p>
+      <p class="clock-label">Minutes</p>
+    </div>
+  
+    <div class="clock-column">
+      <p class="clock-seconds clock-timer"></p>
+      <p class="clock-label">Seconds</p>
+    </div>
+  </div>
+
+  <script>
+    // load event listeners
+loadEventListeners();
+
+function loadEventListeners() {
+	document.addEventListener('DOMContentLoaded', function() { calcTime(); });
+};
+
+var timeTo = document.getElementById('time-to').value,
+		date,
+		now = new Date(),
+		newYear = new Date('1.1.2020').getTime(),
+		startTimer = '';
+
+// calculate date, hour, minute and second
+function calcTime(dates) {
+	//ui variables
+	clearInterval(startTimer);
+
+	if(typeof(dates) == 'undefined'){
+		date = new Date(newYear).getTime();
+	}else {
+		date = new Date(dates).getTime();
+	}
+
+	function updateTimer(date){
+
+		var now = new Date().getTime();
+		var distance = date - now;
+
+		// Time calculations for days, hours, minutes and seconds
+		var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+		var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+		var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+		// select element
+		document.querySelector('.clock-day').innerHTML = days;
+		document.querySelector('.clock-hours').innerHTML = hours;
+		document.querySelector('.clock-minutes').innerHTML = minutes;
+		document.querySelector('.clock-seconds').innerHTML = seconds;
+
+		if(now >= date){
+			clearInterval(startTimer);
+			document.querySelector('.clock-day').innerHTML = 'D';
+			document.querySelector('.clock-hours').innerHTML = 'O';
+			document.querySelector('.clock-minutes').innerHTML = 'N';
+			document.querySelector('.clock-seconds').innerHTML = 'E';
+		}
+	}
+
+	startTimer = setInterval(function() { updateTimer(date); }, 1000);
+
+}
+
+
+  </script>
+</body>
+</html>
